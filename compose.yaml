@@ -1,0 +1,57 @@
+services:
+  receiver:
+    image: "11notes/volume-rsync"
+    container_name: "receiver"
+    command: ["receiver"]
+    environment:
+      TZ: Europe/Zurich
+      SSH_PORT: 2222
+      SSH_AUTHORIZED_KEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ
+      SSH_HOST_KEY: |-
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACCVvFZeNXWqIVpyVjZTzig0g5xCNkwWL4NRL5YBsWTIkQAAAJjiM55K4jOe
+        SgAAAAtzc2gtZWQyNTUxOQAAACCVvFZeNXWqIVpyVjZTzig0g5xCNkwWL4NRL5YBsWTIkQ
+        AAAEC68u0POEIVVWNw3dsUs4qOFmub3JL66ehRQZUfV8Qfq5W8Vl41daohWnJWNlPOKDSD
+        nEI2TBYvg1EvlgGxZMiRAAAAEXJvb3RAYzFkNmZkODYyY2UzAQIDBA==
+        -----END OPENSSH PRIVATE KEY-----
+    volumes:
+      - "receiver:/rsync"
+    networks:
+      - "rsync"
+    restart: always
+
+  sender:
+    image: "11notes/volume-rsync"
+    container_name: "sender"
+    depends_on:
+      receiver:
+        condition: service_healthy
+        restart: true
+    command: ["sender"]
+    environment:
+      DEBUG: true
+      TZ: Europe/Zurich
+      SSH_HOST: receiver
+      SSH_PORT: 2222
+      SSH_KNOWN_HOSTS: receiver ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
+      SSH_PRIVATE_KEY: |-
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACAqEdavWlvrRsECS1dWMdt8Rzw8bYN0JxoQZVaFxWJqmQAAAJiEAwhChAMI
+        QgAAAAtzc2gtZWQyNTUxOQAAACAqEdavWlvrRsECS1dWMdt8Rzw8bYN0JxoQZVaFxWJqmQ
+        AAAEAIchARmgWd/hZQVvk0MZKTizC50zj89vsQRTSXsvKnFSoR1q9aW+tGwQJLV1Yx23xH
+        PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
+        -----END OPENSSH PRIVATE KEY-----
+      RSYNC_TRANSFER_DELAY: 5
+    volumes:
+      - "sender:/rsync"
+    networks:
+      - "rsync"
+    restart: always
+volumes:
+  receiver:
+  sender:
+networks:
+  rsync:
+    internal: true

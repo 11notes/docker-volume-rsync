@@ -1,0 +1,6 @@
+.gitignore
+.gitattributes
+*.md
+LICENSE
+maintain/
+project*
