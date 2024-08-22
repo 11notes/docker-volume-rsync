@@ -10,10 +10,14 @@
 # SYNOPSIS
 What can I do with this? Create a sender and attach the volume you want to sync in real time, then create a receiver on the other side of the world and attach another volume. Both the sender volume will now be synced in real time on any file changes with the receiver volume via rsync. Since the sender can use any networking available to it, this works via Wireguard, Tailscale, Zerotier, you name it.
 
-# IMPORTANT
-The sync direction is from sender to receiver **only**. It will also delete all files in the receiver which are not present in the sender!
+This image can help you synchronize your Traefik configuration in a HA pair or your Nginx www data as well as any other configuration or variable files for high-available file-based setups.
 
-Since inotifyd is used to watch a directory and all files within, the sender container will spawn a inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**!
+# IMPORTANT
+The sync direction is **unidirectional**, from sender to receiver. It will also delete all files in the receiver which are not present in the sender!
+
+Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**!
+
+If you need to synchronize multiple volumes, use this image multiple times.
 
 # VOLUMES
 * **/rsync** - Directory of the volume that will be synced. Simply attach your volume to this path on both receiver and sender
