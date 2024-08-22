@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "*"
+      - "!amd64*"
+      - "!arm64*"
 
 permissions:
   contents: write
