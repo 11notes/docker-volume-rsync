@@ -103,7 +103,6 @@ networks:
 | `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 0 |
 
 # BUILT WITH
-* [mimalloc](https://github.com/microsoft/mimalloc)
 * [alpine](https://alpinelinux.org)
 
 # TIPS
