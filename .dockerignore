@@ -1,6 +1,7 @@
 .gitignore
 .gitattributes
 *.md
+diagram.png
 LICENSE
 maintain/
 project*
