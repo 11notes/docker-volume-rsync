@@ -1,6 +1,6 @@
 ![Banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
-# 🏔️ Alpine Linux
+# 🏔️ Alpine - volume rsync
 ![size](https://img.shields.io/docker/image-size/11notes/volume-rsync/0.1.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/volume-rsync/0.1.0?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/volume-rsync?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/volume-rsync?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
 
 **Sync a volume of two containers in real time, across the globe!**
@@ -92,10 +92,10 @@ networks:
 | --- | --- | --- |
 | `TZ` | [Time Zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | |
 | `DEBUG` | Show debug information | |
-| `MASK` | The mask used for [inotifyd](inotifydhttps://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
 | `RECEIVER:SSH_PORT` | TCP port of SSH daemon | 22 |
 | `RECEIVER:SSH_AUTHORIZED_KEY` | The public SSH key of the sender |  |
 | `RECEIVER:SSH_HOST_KEY` | The host key used for the SSH daemon |  |
+| `SENDER:MASK` | The mask used for [inotifyd](inotifydhttps://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
 | `SENDER:SSH_HOST` | The receiver IP or FQDN |  |
 | `SENDER:SSH_PORT` | TCP port of receiver SSH daemon | 22 |
 | `SENDER:SSH_KNOWN_HOSTS` | The public key of the receivers SSH daemon (correlates to RECEIVER:SSH_HOST_KEY) |  |
