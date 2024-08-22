@@ -1,5 +1,4 @@
-.gitignore
-.gitattributes
+.git*
 *.md
 diagram.png
 LICENSE
