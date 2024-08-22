@@ -5,7 +5,7 @@
 
 **Sync a volume of two containers in real time, across the globe!**
 
-![diagram](https://github.com/11notes/docker-volume-sync/blob/main/static/diagram.png)
+![diagram](https://github.com/11notes/docker-volume-rsync/blob/main/diagram.png)
 
 # SYNOPSIS
 What can I do with this? Create a sender and attach the volume you want to sync in real time, then create a receiver on the other side of the world and attach another volume. Both the sender volume will now be synced in real time on any file changes with the receiver volume via rsync. Since the sender can use any networking available to it, this works via Wireguard, Tailscale, Zerotier, you name it.
