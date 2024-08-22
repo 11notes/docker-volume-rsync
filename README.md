@@ -10,7 +10,7 @@
 # SYNOPSIS
 What can I do with this? Create a sender and attach the volume you want to sync in real time, then create a receiver on the other side of the world and attach another volume. Both the sender volume will now be synced in real time on any file changes with the receiver volume via rsync. Since the sender can use any networking available to it, this works via Wireguard, Tailscale, Zerotier, you name it.
 
-This image can help you synchronize your Traefik configuration in a HA pair or your Nginx www data as well as any other configuration or variable files for high-available file-based setups.
+This image can help you synchronize your Traefik configuration in a HA pair or your Nginx www data as well as any other configuration or variable files for high-available file-based setups and configurations. Sync your Traefik ACME generated certs between multiple Traefik nodes.
 
 # IMPORTANT
 The sync direction is **unidirectional**, from sender to receiver. It will also delete all files in the receiver which are not present in the sender!
