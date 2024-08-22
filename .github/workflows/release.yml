@@ -11,7 +11,7 @@ permissions:
 jobs:
   release:
     name: release
-    runs-on: alpine
+    runs-on: ubuntu-latest
     steps:
       - name: create release notes
         env:
