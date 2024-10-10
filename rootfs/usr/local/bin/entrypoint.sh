@@ -35,7 +35,7 @@
         fi
         echo "${SSH_PRIVATE_KEY}" > /.ssh/id_ed25519
 
-        elevenLogJSON debug "starting rsync: ${APP_ROOT}/ ${APP_ROOT}"
+        elevenLogJSON debug "starting directory rsync: ${APP_ROOT}/ ${APP_ROOT}"
         nq -q /usr/bin/rsync -az --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${APP_ROOT}/ docker@${SSH_HOST}:${APP_ROOT}
 
         recurseinotifyd() {

@@ -1,11 +1,11 @@
 services:
   receiver:
-    image: "11notes/volume-rsync"
+    image: "11notes/volume-rsync:stable"
     container_name: "receiver"
     command: ["receiver"]
     environment:
       TZ: Europe/Zurich
-      SSH_PORT: 2222
+      SSH_PORT: 8022
       SSH_AUTHORIZED_KEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ
       SSH_HOST_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----
@@ -22,7 +22,7 @@ services:
     restart: always
 
   sender:
-    image: "11notes/volume-rsync"
+    image: "11notes/volume-rsync:stable"
     container_name: "sender"
     depends_on:
       receiver:
@@ -33,7 +33,7 @@ services:
       DEBUG: true
       TZ: Europe/Zurich
       SSH_HOST: receiver
-      SSH_PORT: 2222
+      SSH_PORT: 8022
       SSH_KNOWN_HOSTS: receiver ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
       SSH_PRIVATE_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----

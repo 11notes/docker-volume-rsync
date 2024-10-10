@@ -1,6 +1,6 @@
 #!/bin/ash
   CMD=$(cat /run/command)
-  case "${1}" in
+  case "${CMD}" in
     receiver)
       netstat -nlp | grep -qE "sshd -D -f"
     ;;

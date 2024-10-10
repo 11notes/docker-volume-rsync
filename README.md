@@ -1,7 +1,7 @@
 ![Banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # 🏔️ Alpine - volume rsync
-![size](https://img.shields.io/docker/image-size/11notes/volume-rsync/0.1.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/volume-rsync/0.1.0?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/volume-rsync?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/volume-rsync?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
+![size](https://img.shields.io/docker/image-size/11notes/volume-rsync/stable?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/volume-rsync/stable?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/volume-rsync?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/volume-rsync?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
 
 **Sync a volume of two containers in real time, across the globe!**
 
@@ -17,7 +17,7 @@ The sync direction is **unidirectional**, from sender to receiver. It will also 
 
 Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**!
 
-If you need to synchronize multiple volumes, use this image multiple times.
+If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want. To sync to multiple endpoints (1:n) use multiple senders with the same volumes.
 
 # VOLUMES
 * **/rsync** - Directory of the volume that will be synced. Simply attach your volume to this path on both receiver and sender
@@ -26,12 +26,12 @@ If you need to synchronize multiple volumes, use this image multiple times.
 ```yaml
 services:
   receiver:
-    image: "11notes/volume-rsync"
+    image: "11notes/volume-rsync:stable"
     container_name: "receiver"
     command: ["receiver"]
     environment:
       TZ: Europe/Zurich
-      SSH_PORT: 2222
+      SSH_PORT: 8022
       SSH_AUTHORIZED_KEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ
       SSH_HOST_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----
@@ -48,7 +48,7 @@ services:
     restart: always
 
   sender:
-    image: "11notes/volume-rsync"
+    image: "11notes/volume-rsync:stable"
     container_name: "sender"
     depends_on:
       receiver:
@@ -59,7 +59,7 @@ services:
       DEBUG: true
       TZ: Europe/Zurich
       SSH_HOST: receiver
-      SSH_PORT: 2222
+      SSH_PORT: 8022
       SSH_KNOWN_HOSTS: receiver ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
       SSH_PRIVATE_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----
@@ -99,12 +99,12 @@ networks:
 | `RECEIVER:SSH_PORT` | TCP port of SSH daemon | 22 |
 | `RECEIVER:SSH_AUTHORIZED_KEY` | The public SSH key of the sender |  |
 | `RECEIVER:SSH_HOST_KEY` | The host key used for the SSH daemon |  |
-| `SENDER:MASK` | The mask used for [inotifyd](inotifydhttps://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
+| `SENDER:MASK` | The mask used for [inotifyd](https://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
 | `SENDER:SSH_HOST` | The receiver IP or FQDN |  |
 | `SENDER:SSH_PORT` | TCP port of receiver SSH daemon | 22 |
 | `SENDER:SSH_KNOWN_HOSTS` | The public key of the receivers SSH daemon (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
-| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 0 |
+| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 1 |
 
 # BUILT WITH
 * [alpine](https://alpinelinux.org)

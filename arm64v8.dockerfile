@@ -14,10 +14,10 @@
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
   COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
   ENV APP_ROOT=/rsync
-  ENV APP_VERSION=0.1.0
+  ENV APP_VERSION=stable
   ENV NQDIR=/run/nq
   ENV MASK=cdnym
-  ENV RSYNC_TRANSFER_DELAY=0
+  ENV RSYNC_TRANSFER_DELAY=1
   ENV SSH_PORT=22
   
 # :: Run
