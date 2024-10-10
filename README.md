@@ -25,14 +25,38 @@ If you need to synchronize multiple volumes, simply use /rsync as your base path
 # COMPOSE
 ```yaml
 services:
-  receiver:
+  receiver1:
     image: "11notes/volume-rsync:stable"
-    container_name: "receiver"
+    container_name: "receiver1"
     command: ["receiver"]
     environment:
       TZ: Europe/Zurich
       SSH_PORT: 8022
-      SSH_AUTHORIZED_KEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ
+      SSH_AUTHORIZED_KEYS: |-
+        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ sender:8022
+      SSH_HOST_KEY: |-
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+        QyNTUxOQAAACCVvFZeNXWqIVpyVjZTzig0g5xCNkwWL4NRL5YBsWTIkQAAAJjiM55K4jOe
+        SgAAAAtzc2gtZWQyNTUxOQAAACCVvFZeNXWqIVpyVjZTzig0g5xCNkwWL4NRL5YBsWTIkQ
+        AAAEC68u0POEIVVWNw3dsUs4qOFmub3JL66ehRQZUfV8Qfq5W8Vl41daohWnJWNlPOKDSD
+        nEI2TBYvg1EvlgGxZMiRAAAAEXJvb3RAYzFkNmZkODYyY2UzAQIDBA==
+        -----END OPENSSH PRIVATE KEY-----
+    volumes:
+      - "receiver:/rsync"
+    networks:
+      - "rsync"
+    restart: always
+
+  receiver2:
+    image: "11notes/volume-rsync:stable"
+    container_name: "receiver2"
+    command: ["receiver"]
+    environment:
+      TZ: Europe/Zurich
+      SSH_PORT: 8022
+      SSH_AUTHORIZED_KEYS: |-
+        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoR1q9aW+tGwQJLV1Yx23xHPDxtg3QnGhBlVoXFYmqZ sender:8022
       SSH_HOST_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----
         b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -58,9 +82,12 @@ services:
     environment:
       DEBUG: true
       TZ: Europe/Zurich
-      SSH_HOST: receiver
-      SSH_PORT: 8022
-      SSH_KNOWN_HOSTS: receiver ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
+      SSH_HOSTS: |-
+        receiver1:8022
+        receiver2:8022
+      SSH_KNOWN_HOSTS: |-
+        [receiver1]:8022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
+        [receiver2]:8022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJW8Vl41daohWnJWNlPOKDSDnEI2TBYvg1EvlgGxZMiR
       SSH_PRIVATE_KEY: |-
         -----BEGIN OPENSSH PRIVATE KEY-----
         b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -69,7 +96,6 @@ services:
         AAAEAIchARmgWd/hZQVvk0MZKTizC50zj89vsQRTSXsvKnFSoR1q9aW+tGwQJLV1Yx23xH
         PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
         -----END OPENSSH PRIVATE KEY-----
-      RSYNC_TRANSFER_DELAY: 5
     volumes:
       - "sender:/rsync"
     networks:
@@ -97,12 +123,11 @@ networks:
 | `TZ` | [Time Zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | |
 | `DEBUG` | Show debug information | |
 | `RECEIVER:SSH_PORT` | TCP port of SSH daemon | 22 |
-| `RECEIVER:SSH_AUTHORIZED_KEY` | The public SSH key of the sender |  |
+| `RECEIVER:SSH_AUTHORIZED_KEYS` | The public SSH keys of the senders |  |
 | `RECEIVER:SSH_HOST_KEY` | The host key used for the SSH daemon |  |
 | `SENDER:MASK` | The mask used for [inotifyd](https://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
-| `SENDER:SSH_HOST` | The receiver IP or FQDN |  |
-| `SENDER:SSH_PORT` | TCP port of receiver SSH daemon | 22 |
-| `SENDER:SSH_KNOWN_HOSTS` | The public key of the receivers SSH daemon (correlates to RECEIVER:SSH_HOST_KEY) |  |
+| `SENDER:SSH_HOSTS` | The receivers IP:port or FQDN:port |  |
+| `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
 | `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 1 |
 

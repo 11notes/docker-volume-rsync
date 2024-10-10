@@ -7,12 +7,12 @@
     
     case "${1}" in
       receiver)
-        elevenLogJSON debug "ENV:SSH_PORT=${SSH_PORT}"
-
-        if ! cat /.ssh/authorized_keys | grep -q "${SSH_AUTHORIZED_KEY}"; then 
-          elevenLogJSON info "authorized key ${SSH_AUTHORIZED_KEY} added"
-          echo "${SSH_AUTHORIZED_KEY}" >> /.ssh/authorized_keys
-        fi
+        for KEY in "${SSH_AUTHORIZED_KEYS}"; do
+          if ! cat /.ssh/authorized_keys | grep -q "${KEY}"; then 
+            elevenLogJSON info "authorized key ${KEY} added"
+            echo "${KEY}" >> /.ssh/authorized_keys
+          fi
+        done
 
         sed -i 's/^Port.*/Port '${SSH_PORT}'/' /etc/ssh/sshd_config
         echo "${SSH_HOST_KEY}" > /etc/ssh/ssh_host_ed25519_key
@@ -24,19 +24,21 @@
       ;;
 
       sender)
-        elevenLogJSON debug "ENV:MASK=${MASK}"
-        elevenLogJSON debug "ENV:RSYNC_TRANSFER_DELAY=${RSYNC_TRANSFER_DELAY}"
-        elevenLogJSON debug "ENV:SSH_HOST=${SSH_HOST}"
-        elevenLogJSON debug "ENV:SSH_PORT=${SSH_PORT}"
-
-        if ! cat /.ssh/known_hosts | grep -q "${SSH_KNOWN_HOSTS}"; then 
-          elevenLogJSON info "known host ${SSH_KNOWN_HOSTS} added"
-          echo "${SSH_KNOWN_HOSTS}" >> /.ssh/known_hosts
-        fi
+        for HOST in "${SSH_KNOWN_HOSTS}"; do
+          if ! cat /.ssh/known_hosts | grep -q "${HOST}"; then 
+            elevenLogJSON info "known host ${HOST} added"
+            echo "${HOST}" >> /.ssh/known_hosts
+          fi
+        done
+    
         echo "${SSH_PRIVATE_KEY}" > /.ssh/id_ed25519
 
         elevenLogJSON debug "starting directory rsync: ${APP_ROOT}/ ${APP_ROOT}"
-        nq -q /usr/bin/rsync -az --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${APP_ROOT}/ docker@${SSH_HOST}:${APP_ROOT}
+        for HOST in "${SSH_HOSTS}"; do
+          SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
+          SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
+          nq -q /usr/bin/rsync -az --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${APP_ROOT}/ docker@${SSH_HOST}:${APP_ROOT}
+        done
 
         recurseinotifyd() {
           for d in ${1}/*; do
