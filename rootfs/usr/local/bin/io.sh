@@ -12,7 +12,7 @@
         /sbin/inotifyd /usr/local/bin/io.sh ${2}/${3}:${MASK} &
         
         if [ ${RSYNC_TRANSFER_DELAY} -gt 0 ]; then nq -q sleep ${RSYNC_TRANSFER_DELAY}; fi
-        for HOST in "${SSH_HOSTS}"; do
+        for HOST in ${SSH_HOSTS}; do
           SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
           SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
           elevenLogJSON debug "starting directory rsync: ${2}/${3}/ ${2}/${3} for ${SSH_HOST}:${SSH_PORT}"
@@ -20,7 +20,7 @@
         done
       else
         if [ ${RSYNC_TRANSFER_DELAY} -gt 0 ]; then nq -q sleep ${RSYNC_TRANSFER_DELAY}; fi
-        for HOST in "${SSH_HOSTS}"; do
+        for HOST in ${SSH_HOSTS}; do
           SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
           SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
           elevenLogJSON debug "starting file rsync: ${2}/ ${2} for ${SSH_HOST}:${SSH_PORT}"

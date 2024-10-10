@@ -7,15 +7,9 @@
     
     case "${1}" in
       receiver)
-        for KEY in "${SSH_AUTHORIZED_KEYS}"; do
-          if ! cat /.ssh/authorized_keys | grep -q "${KEY}"; then 
-            elevenLogJSON info "authorized key ${KEY} added"
-            echo "${KEY}" >> /.ssh/authorized_keys
-          fi
-        done
-
-        sed -i 's/^Port.*/Port '${SSH_PORT}'/' /etc/ssh/sshd_config
+        echo "${SSH_AUTHORIZED_KEYS}" > /.ssh/authorized_keys
         echo "${SSH_HOST_KEY}" > /etc/ssh/ssh_host_ed25519_key
+        sed -i 's/^Port.*/Port '${SSH_PORT}'/' /etc/ssh/sshd_config
 
         elevenLogJSON info "starting SSH on 0.0.0.0:${SSH_PORT}"
         set -- "/usr/sbin/sshd" \
@@ -24,13 +18,7 @@
       ;;
 
       sender)
-        for HOST in "${SSH_KNOWN_HOSTS}"; do
-          if ! cat /.ssh/known_hosts | grep -q "${HOST}"; then 
-            elevenLogJSON info "known host ${HOST} added"
-            echo "${HOST}" >> /.ssh/known_hosts
-          fi
-        done
-    
+        echo "${SSH_KNOWN_HOSTS}" > /.ssh/known_hosts    
         echo "${SSH_PRIVATE_KEY}" > /.ssh/id_ed25519
 
         elevenLogJSON debug "starting directory rsync: ${APP_ROOT}/ ${APP_ROOT}"
