@@ -24,8 +24,10 @@
           SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
           SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
           elevenLogJSON debug "starting file rsync: ${2}/ ${2} for ${SSH_HOST}:${SSH_PORT}"
-          nq -q /usr/bin/rsync -az --delete --mkpath  --rsh="ssh -p${SSH_PORT}"${2}/ docker@${SSH_HOST}:${2}
+          nq -q /usr/bin/rsync -az --delete --mkpath  --rsh="ssh -p${SSH_PORT}" ${2}/ docker@${SSH_HOST}:${2}
         done        
       fi
     ;;
   esac
+
+  find ${NQDIR} -mmin +15 -type f -exec rm -f {} \;
