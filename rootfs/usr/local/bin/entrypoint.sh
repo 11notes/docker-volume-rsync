@@ -22,7 +22,7 @@
         echo "${SSH_PRIVATE_KEY}" > /.ssh/id_ed25519
 
         elevenLogJSON debug "starting directory rsync: ${APP_ROOT}/ ${APP_ROOT}"
-        for HOST in "${SSH_HOSTS}"; do
+        for HOST in ${SSH_HOSTS}; do
           SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
           SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
           nq -q /usr/bin/rsync -az --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${APP_ROOT}/ docker@${SSH_HOST}:${APP_ROOT}

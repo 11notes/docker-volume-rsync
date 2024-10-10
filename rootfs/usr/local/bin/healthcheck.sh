@@ -2,7 +2,7 @@
   CMD=$(cat /run/command)
   case "${CMD}" in
     receiver)
-      netstat -nlp | grep -qE "sshd -D -f"
+      netstat -nlp | grep -qE "sshd"
     ;;
 
     sender)
