@@ -15,12 +15,9 @@ This image can help you synchronize your Traefik configuration in a HA pair or y
 # IMPORTANT
 The sync direction is **unidirectional**, from sender to receiver. It will also delete all files in the receiver which are not present in the sender!
 
-Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**!
+Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**! Each inotifyd uses about 64kB of memory.
 
-If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want. To sync to multiple endpoints (1:n) use multiple senders with the same volumes.
-
-# VOLUMES
-* **/rsync** - Directory of the volume that will be synced. Simply attach your volume to this path on both receiver and sender
+If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want.
 
 # COMPOSE
 ```yaml

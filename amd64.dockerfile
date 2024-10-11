@@ -51,9 +51,6 @@
         /etc/ssh \
         ${APP_ROOT};
 
-# :: Volumes
-  VOLUME ["${APP_ROOT}"]
-
 # :: Monitor
   HEALTHCHECK --interval=5s --timeout=2s CMD /usr/local/bin/healthcheck.sh || exit 1
 
