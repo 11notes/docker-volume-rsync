@@ -1,7 +1,7 @@
 ![Banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # 🏔️ Alpine - volume rsync
-![size](https://img.shields.io/docker/image-size/11notes/volume-rsync/stable?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/volume-rsync/stable?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/volume-rsync?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/volume-rsync?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
+![size](https://img.shields.io/docker/image-size/11notes/volume-rsync/stable?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/volume-rsync/stable?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/volume-rsync?color=2b75d6)
 
 **Sync a volume of two containers in real time, across the globe!**
 
@@ -93,6 +93,8 @@ services:
         AAAEAIchARmgWd/hZQVvk0MZKTizC50zj89vsQRTSXsvKnFSoR1q9aW+tGwQJLV1Yx23xH
         PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
         -----END OPENSSH PRIVATE KEY-----
+    tmpfs:
+      - "/run/inotifyd"
     volumes:
       - "sender:/rsync"
     networks:
@@ -126,7 +128,10 @@ networks:
 | `SENDER:SSH_HOSTS` | The receivers IP:port or FQDN:port |  |
 | `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
-| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 1 |
+| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 0 |
+
+# SOURCE
+* [11notes/volume-rsync:stable](https://hub.docker.com/r/11notes/docker-volume-rsync)
 
 # BUILT WITH
 * [alpine](https://alpinelinux.org)
