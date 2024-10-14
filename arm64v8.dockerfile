@@ -16,8 +16,9 @@
   ENV APP_ROOT=/rsync
   ENV APP_VERSION=stable
   ENV NQDIR=/run/nq
+  ENV IODIR=/run/inotifyd
   ENV MASK=cdnym
-  ENV RSYNC_TRANSFER_DELAY=1
+  ENV RSYNC_TRANSFER_DELAY=0
   ENV SSH_PORT=22
   
 # :: Run
@@ -31,11 +32,13 @@
         inotify-tools \
         openssh \
         nq \
+        findutils \
         openssl; \
       apk --no-cache --update upgrade; \
       mkdir -p ${APP_ROOT}; \
       mkdir -p /.ssh; \
       mkdir -p ${NQDIR}; \
+      mkdir -p ${IODIR}; \
       touch /.ssh/authorized_keys; \
       touch /.ssh/known_hosts; \
       touch /.ssh/id_ed25519; \

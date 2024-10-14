@@ -70,6 +70,8 @@ services:
         AAAEAIchARmgWd/hZQVvk0MZKTizC50zj89vsQRTSXsvKnFSoR1q9aW+tGwQJLV1Yx23xH
         PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
         -----END OPENSSH PRIVATE KEY-----
+    tmpfs:
+      - "/run/inotifyd"
     volumes:
       - "sender:/rsync"
     networks:
