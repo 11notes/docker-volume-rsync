@@ -71,7 +71,7 @@ services:
         PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
         -----END OPENSSH PRIVATE KEY-----
     tmpfs:
-      - "/run/inotifyd"
+      - "/run/inotifyd:uid=1000,gid=1000"
     volumes:
       - "sender:/rsync"
     networks:

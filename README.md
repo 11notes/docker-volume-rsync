@@ -94,7 +94,7 @@ services:
         PDxtg3QnGhBlVoXFYmqZAAAAEXJvb3RAZGUxYzU4ZTA0NTc2AQIDBA==
         -----END OPENSSH PRIVATE KEY-----
     tmpfs:
-      - "/run/inotifyd"
+      - "/run/inotifyd:uid=1000,gid=1000"
     volumes:
       - "sender:/rsync"
     networks:
@@ -131,7 +131,7 @@ networks:
 | `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 0 |
 
 # SOURCE
-* [11notes/volume-rsync:stable](https://hub.docker.com/r/11notes/docker-volume-rsync)
+* [11notes/volume-rsync:stable](https://github.com/11notes/docker-volume-rsync/tree/stable)
 
 # BUILT WITH
 * [alpine](https://alpinelinux.org)
