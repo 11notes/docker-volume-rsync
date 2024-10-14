@@ -128,7 +128,7 @@ networks:
 | `SENDER:SSH_HOSTS` | The receivers IP:port or FQDN:port |  |
 | `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
-| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 0 |
+| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 10 |
 
 # SOURCE
 * [11notes/volume-rsync:stable](https://github.com/11notes/docker-volume-rsync/tree/stable)

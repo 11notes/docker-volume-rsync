@@ -2,7 +2,7 @@
   elevenLogJSON debug "event: ${1}, dir: ${2}, file: ${3}"
 
   inotifyd_queue(){
-    find ${IODIR} -type f -not -newermt '-10 seconds' -exec rm -f {} \;
+    find ${IODIR} -type f -not -newermt "-${RSYNC_TRANSFER_DELAY} seconds" -exec rm -f {} \;
     INOTIFYD_PATH=$(echo "${1}" | sed -e "s@\/@_@g")
     INOTIFYD_FILE="${IODIR}/${INOTIFYD_PATH}"
     if [ -f "${INOTIFYD_FILE}" ]; then
