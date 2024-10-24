@@ -8,20 +8,28 @@
 ![diagram](https://github.com/11notes/docker-volume-rsync/blob/main/diagram.png?raw=true)
 
 # SYNOPSIS
-What can I do with this? Create a sender and attach the volume you want to sync in real time, then create a receiver on the other side of the world and attach another volume. Both the sender volume will now be synced in real time on any file changes with the receiver volume via rsync. Since the sender can use any networking available to it, this works via Wireguard, Tailscale, Zerotier, you name it.
+**What can I do with this?** Create a sender and attach the volume you want to sync in real time, then create a receiver on the other side of the world and attach another volume. Both the sender volume will now be synced in real time on any file changes with the receiver volume via rsync. Since the sender can use any networking available to it, this works via Wireguard, Tailscale, Zerotier, you name it.
 
 This image can help you synchronize your Traefik configuration in a HA pair or your Nginx www data as well as any other configuration or variable files for high-available file-based setups and configurations. Sync your Traefik ACME generated certs between multiple Traefik nodes.
 
 # IMPORTANT
 The sync direction is **unidirectional**, from sender to receiver. It will also delete all files in the receiver which are not present in the sender!
 
-Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**! Each inotifyd uses about 64kB of memory.
+Since inotifyd is used to watch a directory and all files within, the sender container will spawn an inotifyd for each subfolder (recursive). If you have 200 subfolders, this will result in 200 inotifyd processes running in the sender! This image is not meant to sync thousands of files, there are better solutions for this which don’t work in *realtime*. Realtime file sync is very **expensive** in terms of CPU cycles and network bandwidth. Use with **care**! Each inotifyd uses about **64kB** of memory.
 
-If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want.
+If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want. Do not forget that every directory needs to be owned by 1000:1000!
 
 # COMPOSE
 ```yaml
 services:
+  chown:
+    image: "11notes/chown:stable"
+    container_name: "chown"
+    environment:
+      TZ: "Europe/Zurich"
+    volumes:
+      - "sender:/chown/sender"
+      
   receiver1:
     image: "11notes/volume-rsync:stable"
     container_name: "receiver1"
@@ -75,6 +83,8 @@ services:
       receiver:
         condition: service_healthy
         restart: true
+      chown:
+        condition: service_completed_successfully
     command: ["sender"]
     environment:
       DEBUG: true
@@ -124,14 +134,13 @@ networks:
 | `RECEIVER:SSH_PORT` | TCP port of SSH daemon | 22 |
 | `RECEIVER:SSH_AUTHORIZED_KEYS` | The public SSH keys of the senders |  |
 | `RECEIVER:SSH_HOST_KEY` | The host key used for the SSH daemon |  |
-| `SENDER:MASK` | The mask used for [inotifyd](https://wiki.alpinelinux.org/wiki/Inotifyd) | cdnym |
+| `SENDER:MASK` | The mask used for [inotifyd](https://wiki.alpinelinux.org/wiki/Inotifyd) | cdym |
 | `SENDER:SSH_HOSTS` | The receivers IP:port or FQDN:port |  |
 | `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
-| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 10 |
+| `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 5 |
 
 # SOURCE
-* [11notes/volume-rsync:stable](https://github.com/11notes/docker-volume-rsync/tree/stable)
 
 # BUILT WITH
 * [alpine](https://alpinelinux.org)

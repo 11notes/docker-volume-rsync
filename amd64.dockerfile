@@ -13,8 +13,8 @@
   ENV APP_VERSION=stable
   ENV NQDIR=/run/nq
   ENV IODIR=/run/inotifyd
-  ENV MASK=cdnym
-  ENV RSYNC_TRANSFER_DELAY=10
+  ENV MASK=cdym
+  ENV RSYNC_TRANSFER_DELAY=5
   ENV SSH_PORT=22
   
 # :: Run

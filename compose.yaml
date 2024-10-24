@@ -1,4 +1,12 @@
 services:
+  chown:
+    image: "11notes/chown:stable"
+    container_name: "chown"
+    environment:
+      TZ: "Europe/Zurich"
+    volumes:
+      - "sender:/chown/sender"
+      
   receiver1:
     image: "11notes/volume-rsync:stable"
     container_name: "receiver1"
@@ -52,6 +60,8 @@ services:
       receiver:
         condition: service_healthy
         restart: true
+      chown:
+        condition: service_completed_successfully
     command: ["sender"]
     environment:
       DEBUG: true
