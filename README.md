@@ -167,9 +167,10 @@ networks:
 | `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
 | `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 5 |
-| `SENDER:RSYNC_DELETE` | Delete flag of rsync (set to "" if no mirror is needed) | --delete-after |
+| `SENDER:RSYNC_DELETE` | Delete flag of rsync (set to "" if no mirror is needed) | --delete |
 | `SENDER:RSYNC_LOCAL_SOURCE` | Local sync source (if set, no SSH will be used) |  |
 | `SENDER:RSYNC_LOCAL_DESTINATION` | Local sync destination (if set, no SSH will be used)  |  |
+| `SENDER:RSYNC_OPT` | Optional rsync flags like --info --stats etc  |  |
 
 # SOURCE
 
