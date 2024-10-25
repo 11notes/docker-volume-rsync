@@ -19,6 +19,8 @@ Since inotifyd is used to watch a directory and all files within, the sender con
 
 If you need to synchronize multiple volumes, simply use /rsync as your base path and mount as many volumes as you want. Do not forget that every directory needs to be owned by 1000:1000!
 
+You can also local sync (no SSH) any volumes by using the RSYNC_LOCAL environment variables.
+
 # COMPOSE
 ```yaml
 services:
@@ -110,9 +112,35 @@ services:
     networks:
       - "rsync"
     restart: always
+
+  sender.local:
+    image: "11notes/volume-rsync:stable"
+    container_name: "sender.local"
+    depends_on:
+      receiver:
+        condition: service_healthy
+        restart: true
+      chown:
+        condition: service_completed_successfully
+    command: ["sender"]
+    environment:
+      DEBUG: true
+      TZ: Europe/Zurich
+      RSYNC_LOCAL_SOURCE: "/rsync/source"
+      RSYNC_LOCAL_DESTINATION: "/rsync/destination"
+    tmpfs:
+      - "/run/inotifyd:uid=1000,gid=1000"
+    volumes:
+      - "sender.source:/rsync/source"
+      - "sender.destination:/rsync/destination"
+    networks:
+      - "rsync"
+    restart: always
 volumes:
   receiver:
   sender:
+  sender.source:
+  sender.destination:
 networks:
   rsync:
     internal: true
@@ -139,6 +167,9 @@ networks:
 | `SENDER:SSH_KNOWN_HOSTS` | The public keys of the receivers SSH daemons (correlates to RECEIVER:SSH_HOST_KEY) |  |
 | `SENDER:SSH_PRIVATE_KEY` | The private key of the sender (correlates to RECEIVER:SSH_AUTHORIZED_KEY) |  |
 | `SENDER:RSYNC_TRANSFER_DELAY` | The delay in seconds between file events and the actual transfer (timeout) | 5 |
+| `SENDER:RSYNC_DELETE` | Delete flag of rsync (set to "" if no mirror is needed) | --delete |
+| `SENDER:RSYNC_LOCAL_SOURCE` | Local sync source (if set, no SSH will be used) |  |
+| `SENDER:RSYNC_LOCAL_DESTINATION` | Local sync destination (if set, no SSH will be used)  |  |
 
 # SOURCE
 

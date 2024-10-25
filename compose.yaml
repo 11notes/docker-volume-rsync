@@ -87,9 +87,35 @@ services:
     networks:
       - "rsync"
     restart: always
+
+  sender.local:
+    image: "11notes/volume-rsync:stable"
+    container_name: "sender.local"
+    depends_on:
+      receiver:
+        condition: service_healthy
+        restart: true
+      chown:
+        condition: service_completed_successfully
+    command: ["sender"]
+    environment:
+      DEBUG: true
+      TZ: Europe/Zurich
+      RSYNC_LOCAL_SOURCE: "/rsync/source"
+      RSYNC_LOCAL_DESTINATION: "/rsync/destination"
+    tmpfs:
+      - "/run/inotifyd:uid=1000,gid=1000"
+    volumes:
+      - "sender.source:/rsync/source"
+      - "sender.destination:/rsync/destination"
+    networks:
+      - "rsync"
+    restart: always
 volumes:
   receiver:
   sender:
+  sender.source:
+  sender.destination:
 networks:
   rsync:
     internal: true
