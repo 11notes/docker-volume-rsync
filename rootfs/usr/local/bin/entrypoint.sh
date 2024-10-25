@@ -22,14 +22,14 @@
           echo "${SSH_KNOWN_HOSTS}" > /.ssh/known_hosts    
           echo "${SSH_PRIVATE_KEY}" > /.ssh/id_ed25519
 
-          elevenLogJSON debug "starting directory rsync: ${APP_ROOT}/ ${APP_ROOT}"
           for HOST in ${SSH_HOSTS}; do
             SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
             SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
+            elevenLogJSON debug "starting rsync: ${APP_ROOT}/ ${APP_ROOT} for ${SSH_HOST}:${SSH_PORT}"
             nq -q /usr/bin/rsync -aze ${RSYNC_DELETE} --mkpath --rsh="ssh -p${SSH_PORT}" ${APP_ROOT}/ docker@${SSH_HOST}:${APP_ROOT}
           done
         else
-          elevenLogJSON debug "starting directory rsync: ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}"
+          elevenLogJSON debug "starting rsync: ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}"
           nq -q /usr/bin/rsync -az ${RSYNC_DELETE} --mkpath ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}
         fi
 

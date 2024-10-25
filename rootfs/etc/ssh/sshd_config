@@ -8,3 +8,4 @@ GatewayPorts no
 X11Forwarding no
 UseDNS no
 Subsystem sftp /usr/lib/ssh/sftp-server
+LogLevel QUIET
