@@ -18,11 +18,11 @@
             SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
             SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
             elevenLogJSON debug "starting rsync for directory event: ${2}/${3} ${2}/${3} for ${SSH_HOST}:${SSH_PORT}"
-            nq -q /usr/bin/rsync -aze ${RSYNC_DELETE} --mkpath --rsh="ssh -p${SSH_PORT}" ${2}/${3}/ docker@${SSH_HOST}:${2}/${3}
+            nq -q /usr/bin/rsync -aze --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${2}/${3}/ docker@${SSH_HOST}:${2}/${3}
           done
         else
           elevenLogJSON debug "starting rsync for directory event: ${2}/${3} ${2}/${3}"
-          nq -q /usr/bin/rsync -az ${RSYNC_DELETE} --mkpath ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}
+          nq -q /usr/bin/rsync -az --delete --mkpath ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}
         fi
 
       else
@@ -32,11 +32,11 @@
             SSH_HOST=$(echo "${HOST}" | awk '{split($0,a,":"); print a[1]}')
             SSH_PORT=$(echo "${HOST}" | awk '{split($0,a,":"); print a[2]}')
             elevenLogJSON debug "starting rsync for file event: ${2}/${3} ${2} for ${SSH_HOST}:${SSH_PORT}"
-            nq -q /usr/bin/rsync -aze ${RSYNC_DELETE} --mkpath --rsh="ssh -p${SSH_PORT}" ${2}/ docker@${SSH_HOST}:${2}
+            nq -q /usr/bin/rsync -aze --delete --mkpath --rsh="ssh -p${SSH_PORT}" ${2}/ docker@${SSH_HOST}:${2}
           done 
         else
           elevenLogJSON debug "starting rsync for file event: ${2}/${3} ${2}/${3}"
-          nq -q /usr/bin/rsync -az ${RSYNC_DELETE} --mkpath ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}
+          nq -q /usr/bin/rsync -az --delete --mkpath ${RSYNC_LOCAL_SOURCE}/ ${RSYNC_LOCAL_DESTINATION}
         fi     
       fi
     ;;
