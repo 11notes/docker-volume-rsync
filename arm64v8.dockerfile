@@ -19,6 +19,7 @@
   ENV IODIR=/run/inotifyd
   ENV MASK=cdym
   ENV RSYNC_TRANSFER_DELAY=5
+  ENV RSYNC_DELETE="--delete"
   ENV SSH_PORT=22
   
 # :: Run
