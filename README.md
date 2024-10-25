@@ -170,7 +170,6 @@ networks:
 | `SENDER:RSYNC_DELETE` | Delete flag of rsync (set to "" if no mirror is needed) | --delete |
 | `SENDER:RSYNC_LOCAL_SOURCE` | Local sync source (if set, no SSH will be used) |  |
 | `SENDER:RSYNC_LOCAL_DESTINATION` | Local sync destination (if set, no SSH will be used)  |  |
-| `SENDER:RSYNC_OPT` | Optional rsync flags like --info --stats etc  |  |
 
 # SOURCE
 
